@@ -13,6 +13,5 @@ var app_fireBase = {};
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
   app_fireBase = firebase;
 })()
