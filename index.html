@@ -8,21 +8,53 @@
   <meta name="author" content="The Productivity Squad">
 
   <link rel="stylesheet" href="css/index.css?v=1.0">
-  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+  <script src="https://kit.fontawesome.com/391471e3fc.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+  <!-- Specific libraries to use
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-database.js"></script> -->
 
 </head>
 
-<body>
+<body onload="print_data()">
+  
+  <!-- Windows that pop up-->
+  <div id="add-task">
+    <form name="task-form">
+      <img src="assets/close.svg" id="close" height="30px" onclick="toggle_add_task(false)"></img>
+      <h1>Add Task</h1>
+      <p>
+        Title: <input type="text" id="task_title" placeholder="Homework" required>
+        Deadline: <input type="date" id="task_deadline" required>
+        Workspace: <input type="text" id="task_workspace" placeholder="School" required>
+        Category: <input type="text" id="task_category" placeholder="Math" required>
+      </p>
+			<input type="button" value="Submit" onclick="save_data()" id="submit-button">
+    </form>
+  </div>
+  <div id="task-footer">
+    <img src="assets/trash.svg" height="30px" onclick="delete_tasks()"></img>
+    <p id="num-checked"></p>
+    <img src="assets/continue.svg" height="20px" onclick="add_to_agenda()"></img>
+  </div>
+
+  <!-- Body -->
   <div id="container">
     <div id="header">
       <h1>Overview</h1>
-      <image src="assets/plus.svg" height="30px"></image>
+      <img src="assets/plus.svg" height="30px" onclick="toggle_add_task(true)"></img>
     </div>
     <div id="nav">
       <div  class="nav-item"><h3 style="background-color: orange;padding: 20px;">Agenda</h3></div>
       <div  class="nav-item"><h3 style="background-color: pink;padding: 20px;">Overview</h3></div>
     </div>
+    <div id="task-list">
+
+    </div>
   </div>
+  
   <script src="js/index.js"></script>
   <script src="js/fireBase.js"></script>
 </body>

@@ -1,0 +1,68 @@
+{
+    "users": {
+      "qqEQk2eyrM0Xzxhx2JSX": {
+        "first": "Ada",
+        "last": "Lovelace",
+        "uid": "qqEQk2eyrM0Xzxhx2JSX",
+        "workspaces": {
+            "workspace1":{
+                "title": "School",
+                "color": "lightgreen",
+                "tasks":{
+                    "task1": {
+                        "title": "Group Project",
+                        "category": "English",
+                        "deadline": "08/20/2020",
+                        "status": "active",
+                        "dailygoal": "null",
+                        "runtime": 0,
+                        "id": 1
+                    },
+                    "task2": {
+                        "title": "Ch 10 #1-25",
+                        "category": "Math",
+                        "deadline": "05/10/2020",
+                        "status": "inactive",
+                        "dailygoal": "null",
+                        "runtime": 0,
+                        "id": 2
+                    },
+                    "task3": {
+                        "title": "Create ProductivityTool",
+                        "category": "Graphic Design",
+                        "deadline": "05/10/2020",
+                        "status": "inactive",
+                        "dailygoal": "null",
+                        "runtime": 0,
+                        "id": 2
+                    }
+                }
+            },
+            "workspace2":{
+                "title": "Work",
+                "color": "lightblue",
+                "tasks":{
+                    "task1": {
+                        "title": "Create Lesson Plans",
+                        "category": "Preperation",
+                        "deadline": "02/20/2001",
+                        "status": "completed",
+                        "dailygoal": "null",
+                        "runtime": 0,
+                        "id": 1
+                    },
+                    "task2": {
+                        "title": "Fill Out Timesheet",
+                        "category": "Miscellaneous",
+                        "deadline": "05/30/2020",
+                        "status": "active",
+                        "dailygoal": "null",
+                        "runtime": 0,
+                        "id": 2
+                    }
+                }
+            }
+        }
+      }
+    }
+  }

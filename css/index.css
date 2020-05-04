@@ -1,6 +1,8 @@
 #container{
     padding: 10px;
-    width: 100%;
+    width: 95%;
+    margin: auto;
+    font-family: 'Open Sans', sans-serif;
 }
 #header{
     padding:10px;
@@ -9,6 +11,10 @@
     display: flex;
     justify-content: space-between;
     align-content: center;
+}
+img{
+    padding: 30px;
+    cursor: pointer;
 }
 #nav{
     margin: 0px;
@@ -19,4 +25,64 @@
 .nav-item{
     width: 50%;
     text-align: center;
+    cursor: pointer;
+}
+.task-card{
+    padding: 0px 10px;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    line-height: 10px;
+}
+.task-card-left{
+    vertical-align: center;
+    height: 100%;
+}
+.task-card-right{
+    width:90px;
+    height: 100px;
+}
+i{
+    font-size: 40px;
+    color: #333;
+    margin:40%;
+    text-align: center;
+}
+#close{
+    margin: -15px -5px;
+    padding: 0px;
+    float: right;
+    display: inline;
+}
+#add-task{
+    display: none;
+    position: fixed;
+    width: 50%;
+    margin: 15% 25%;
+    padding: 20px;
+    background-color: white;
+    border: 2px aliceblue solid;
+    font-family: 'Open Sans', sans-serif;
+}
+input{
+    display:block;
+    margin-bottom: 5px;
+}
+#task-footer{
+    position:fixed;
+    margin:-5px;
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    background-color: whitesmoke;
+    border: 3px #eee solid;
+    justify-content: space-between;
+    display:none;
+    font-family: 'Open Sans', sans-serif;
+}
+#task-footer img{
+    display: inline;
+    cursor: pointer;
+    padding: 10px;
 }
