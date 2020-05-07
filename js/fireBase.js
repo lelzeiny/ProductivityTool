@@ -14,11 +14,70 @@ var app_fireBase = {};
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   localStorage.setItem("uid", "qqEQk2eyrM0Xzxhx2JSX");
+
   app_fireBase = firebase;
 })()
 
+function create_options(){
+  var workspace_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
+  var container = document.getElementById("task_workspace");
+  //if this function is being called for the second time
+  if(container.childNodes.length > 5){
+    container.removeChild(document.getElementsByClassName("workspace-option"));
+  }
+
+  // for each workspace, create an option to select in the dropdown
+  workspace_ref.once('value', function (workspace_snapshot) {
+    workspace_snapshot.forEach(function (child_workspace_snapshot) {
+      var workspace_key = child_workspace_snapshot.key;
+      var workspace_data = child_workspace_snapshot.val();
+
+      var workspace_option = document.createElement("option");
+      workspace_option.value = workspace_data.title;
+      workspace_option.innerText = workspace_data.title;
+      workspace_option.className = "workspace-option";
+      container.appendChild(workspace_option);
+    });
+  });
+}
+
+function create_workspace(){
+  var container = document.getElementById("workspace-div");
+
+  var workspace_new_name = document.createElement("input");
+  workspace_new_name.placeholder = "Workplace Name";
+  workspace_new_name.className = "workspace_new";
+  container.appendChild(workspace_new_name);
+
+  var workspace_new_color = document.createElement("select");
+  var color_array = ["aquamarine", "bisque", "darkgray", "darkkhaki", "darkseagreen", "lavender", "lavenderblush", "lemonchiffon", "lightcyan", "lightblue", "lightgrey", "lightgreen", "lightsalmon", "lightpink", "lightsteelblue", "lightskyblue", "pink", "plum", "powderblue", "peachpuff", "palegreen", "paleturquoise"];
+  for(i in color_array){
+    var color_option = document.createElement("option");
+    color_option.innerText = color_array[i];
+    workspace_new_color.appendChild(color_option);
+    color_option.style.backgroundColor = color_array[i];
+    workspace_new_name.className = "workspace_new";
+  }
+  workspace_new_color.className = "workspace_new";
+  container.appendChild(workspace_new_color);
+}
+
+//called by submit button by add task div
 function save_data() {
-  var workspace_key = find_workspace();
+  var workspace_key = document.getElementById('task_workspace').value;
+  // create and define new workspace, pushes to Firebase
+  if(workspace_key == "new"){
+    workspace_key = document.getElementsByClassName("workspace_new")[0].value;
+    var workspace_url = '/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key;
+    var new_workspace = {
+      title: document.getElementsByClassName("workspace_new")[0].value,
+      color: document.getElementsByClassName("workspace_new")[1].value,
+      tasks: {}
+    }
+    let updates = {};
+    updates[workspace_url] = new_workspace;
+    firebase.database().ref().update(updates);
+  }
   var task_url = '/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/';
   var task_id = firebase.database().ref(task_url).push().key;
   
@@ -33,14 +92,19 @@ function save_data() {
     id: task_id
 	}
 	// push to firebase
-	var updates = {};
+	let updates = {};
 	updates[task_url + task_id] = data;
-	firebase.database().ref().update(updates);
+  firebase.database().ref().update(updates);
+  toggle_add_task(false);
 }
 
-function find_workspace(){
-  var title = document.getElementById('task_workspace').value;
-  return title;
+function toggle_add_task(is_open){
+  if(is_open){
+      document.getElementById("add-task").style.display = "block";
+  }
+  else{
+      document.getElementById("add-task").style.display = "none";
+  }
 }
 
 // create the task cards by reading the database
@@ -52,12 +116,14 @@ function print_data() {
       var workspace_key = child_workspace_snapshot.key;
       var workspace_data = child_workspace_snapshot.val();
 
+      //create workspace titles for each workspace
       var workspace_head = document.createElement("h3");
       workspace_head.innerText = workspace_data.title;
       container.appendChild(workspace_head);
       workspace_head.className = "workspace-head";
       var color = workspace_data.color;
       
+      // for each task that is not complete, create a card
       var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/');
       task_ref.on('value', function(task_snapshot) {
         task_snapshot.forEach(function (child_task_snapshot){
@@ -77,7 +143,6 @@ function print_data() {
 }
 
 // Create HTML Elements
-
 function create_card(task_data_){
   var task_card_ = document.createElement("div");
 
@@ -142,4 +207,33 @@ function toggle_footer(num_active_){
   else{
     footer.style.display = "none";
   }
+}
+
+function toggle_goals(){
+  var user_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
+  var container = document.getElementById("active-tasks");
+  user_ref.once('value', function (workspace_snapshot) {
+    workspace_snapshot.forEach(function (child_workspace_snapshot) {
+      // for each task that is now active, create a box, input with a number
+      var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + child_workspace_snapshot.key + '/tasks/');
+      task_ref.on('value', function(task_snapshot) {
+        task_snapshot.forEach(function (child_task_snapshot){
+          var task_key = child_task_snapshot.key;
+          var task_data = child_task_snapshot.val();
+          var set_active_task;
+          if(task_data.status == "active"){
+            set_active_task = document.createElement("div");
+            var active_title = document.createElement("p");
+            active_title.innerText = task_data.title;
+            set_active_task.appendChild(active_title);
+            var active_goal = document.createElement("select");
+            active_goal.innerHTML = "<option value='0.25'>15 min</option><option value='0.5'>30 min</option><option value='0.75'>45 min</option><option value='1'>1 hr</option><option value='1.5'>1 hr 30 min</option><option value='2'>2 hr</option><option value='3'>3 hr</option><option value='4'>4 hr</option>";
+            set_active_task.appendChild(active_goal);
+            container.appendChild(set_active_task);
+          }
+        });
+      });
+    });
+  });
+  document.getElementById("add-daily-goal").style.display = "inline";
 }

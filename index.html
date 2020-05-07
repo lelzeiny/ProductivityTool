@@ -22,22 +22,36 @@
   
   <!-- Windows that pop up-->
   <div id="add-task">
-    <form name="task-form">
+    <form name="task-form" onsubmit="save_data()">
       <img src="assets/close.svg" id="close" height="30px" onclick="toggle_add_task(false)"></img>
       <h1>Add Task</h1>
       <p>
         Title: <input type="text" id="task_title" placeholder="Homework" required>
         Deadline: <input type="date" id="task_deadline" required>
-        Workspace: <input type="text" id="task_workspace" placeholder="School" required>
+        Workspace: </p>
+      <div id="workspace-div"><select id="task_workspace" value="new" onfocus="create_options()" required>
+        <option disabled selected value style="color:grey">Select an option</option>
+        <option onclick="create_workspace()" value="new">Create new workspace</option>
+      </select></div>
+      <p>
         Category: <input type="text" id="task_category" placeholder="Math" required>
       </p>
-			<input type="button" value="Submit" onclick="save_data()" id="submit-button">
+			<input type="submit" value="Submit" id="submit-button">
+    </form>
+  </div>
+  <div id="add-daily-goal">
+    <h1>Add Goals</h1>
+    <h3>How much time to you want to dedicate today?</h3>
+    <form id="dailygoal-form">
+      <div id="active-tasks">
+      </div>
+      <input type="button" value="Submit" onclick="window.location.href = 'agenda.html'">
     </form>
   </div>
   <div id="task-footer">
     <img src="assets/trash.svg" height="30px" onclick="delete_tasks()"></img>
     <p id="num-checked"></p>
-    <img src="assets/continue.svg" height="20px" onclick="add_to_agenda()"></img>
+    <img src="assets/continue.svg" height="20px" onclick="toggle_goals()"></img>
   </div>
 
   <!-- Body -->

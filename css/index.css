@@ -59,15 +59,27 @@ i{
     display: none;
     position: fixed;
     width: 50%;
-    margin: 15% 25%;
+    margin: 5% 25%;
     padding: 20px;
     background-color: white;
     border: 2px aliceblue solid;
     font-family: 'Open Sans', sans-serif;
 }
-input{
+#add-daily-goal{
+    display: none;
+    position: fixed;
+    width: 50%;
+    margin: 5% 25%;
+    padding: 20px;
+    background-color: white;
+    border: 2px aliceblue solid;
+    font-family: 'Open Sans', sans-serif;
+}
+input, select{
     display:block;
     margin-bottom: 5px;
+    padding:5px;
+    width: 40%;
 }
 #task-footer{
     position:fixed;

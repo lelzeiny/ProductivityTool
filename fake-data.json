@@ -5,7 +5,7 @@
         "last": "Lovelace",
         "uid": "qqEQk2eyrM0Xzxhx2JSX",
         "workspaces": {
-            "workspace1":{
+            "School":{
                 "title": "School",
                 "color": "lightgreen",
                 "tasks":{
@@ -13,8 +13,8 @@
                         "title": "Group Project",
                         "category": "English",
                         "deadline": "08/20/2020",
-                        "status": "active",
-                        "dailygoal": "null",
+                        "status": "inactive",
+                        "weeklygoals": [ 0, 0, 0, 0, 0, 0, 0],
                         "runtime": 0,
                         "id": 1
                     },
@@ -23,7 +23,7 @@
                         "category": "Math",
                         "deadline": "05/10/2020",
                         "status": "inactive",
-                        "dailygoal": "null",
+                        "weeklygoals": [ 0, 0, 0, 0, 0, 0, 0],
                         "runtime": 0,
                         "id": 2
                     },
@@ -32,13 +32,13 @@
                         "category": "Graphic Design",
                         "deadline": "05/10/2020",
                         "status": "inactive",
-                        "dailygoal": "null",
+                        "weeklygoals": [ 0, 0, 0, 0, 0, 0, 0],
                         "runtime": 0,
                         "id": 2
                     }
                 }
             },
-            "workspace2":{
+            "Work":{
                 "title": "Work",
                 "color": "lightblue",
                 "tasks":{
@@ -47,7 +47,7 @@
                         "category": "Preperation",
                         "deadline": "02/20/2001",
                         "status": "completed",
-                        "dailygoal": "null",
+                        "weeklygoals": [ 0, 0, 0, 0, 0, 0, 0],
                         "runtime": 0,
                         "id": 1
                     },
@@ -56,7 +56,7 @@
                         "category": "Miscellaneous",
                         "deadline": "05/30/2020",
                         "status": "active",
-                        "dailygoal": "null",
+                        "weeklygoals": [ 0, 0, 0, 0, 0, 0, 0],
                         "runtime": 0,
                         "id": 2
                     }
