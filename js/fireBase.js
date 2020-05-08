@@ -18,6 +18,7 @@ var app_fireBase = {};
   app_fireBase = firebase;
 })()
 
+// creates the options for the workspaces in the add task drop down
 function create_options(){
   var workspace_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("task_workspace");
@@ -41,6 +42,7 @@ function create_options(){
   });
 }
 
+// inside add task popup, called when user wants to create a new workspace
 function create_workspace(){
   var container = document.getElementById("workspace-div");
 
@@ -62,7 +64,7 @@ function create_workspace(){
   container.appendChild(workspace_new_color);
 }
 
-//called by submit button by add task div
+// called by submit button by add task div
 function save_data() {
   var workspace_key = document.getElementById('task_workspace').value;
   // create and define new workspace, pushes to Firebase
@@ -181,7 +183,7 @@ function create_card(task_data_){
       checkbox.className = "far fa-square";
       task_data_.status = "inactive";
       num_active--;
-      toggle_footer(num_active);
+      toggle_footer(num_active); //toggling footer is old. will be changed to daily goals
     }
     else if(task_data_.status == "inactive"){
       task_data_.status = "active";
@@ -209,6 +211,7 @@ function toggle_footer(num_active_){
   }
 }
 
+//add a daily goal old way
 function toggle_goals(){
   var user_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("active-tasks");
@@ -237,3 +240,9 @@ function toggle_goals(){
   });
   document.getElementById("add-daily-goal").style.display = "inline";
 }
+
+//Agenda:
+// - same nav bar
+// - list all active tasks
+// - title, get current day of week and use as index in weeklygoals
+// - play button on each task
