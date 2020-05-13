@@ -183,8 +183,12 @@ function create_card(task_data_){
       checkbox.className = "far fa-square";
       task_data_.status = "inactive";
       num_active--;
+<<<<<<< HEAD
       toggle_add_goals(false);
       //toggle_footer(num_active); //toggling footer is old. will be changed to daily goals
+=======
+      toggle_footer(num_active); //toggling footer is old. will be changed to daily goals
+>>>>>>> 5c17cd288cefc677c62035383c38476cdb7f6993
     }
     else if(task_data_.status == "inactive"){
       task_data_.status = "active";
@@ -211,8 +215,6 @@ function toggle_footer(num_active_){
     footer.style.display = "none";
   }
 }
-
-
 
 var day_toggled = [null, null, null, null, null, null, null];
 function toggle_add_goals(is_open){
