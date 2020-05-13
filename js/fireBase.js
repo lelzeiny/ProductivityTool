@@ -176,22 +176,16 @@ function create_card(task_data_){
     checkbox.className = "fas fa-square";
   }
   //toggle the checkmark
-  var task_footer = document.getElementById("task-footer");
-  var num_active = 0;
   card_right.addEventListener("click", function () {
     if (task_data_.status == "active"){
       checkbox.className = "far fa-square";
       task_data_.status = "inactive";
-      num_active--;
       toggle_add_goals(false);
-      //toggle_footer(num_active); //toggling footer is old. will be changed to daily goals
     }
     else if(task_data_.status == "inactive"){
       task_data_.status = "active";
       checkbox.className = "far fa-check-square";
-      num_active++;
       toggle_add_goals(true);
-      //toggle_footer(num_active);
     }
   });
   card_right.className = "task-card-right";
@@ -199,17 +193,6 @@ function create_card(task_data_){
   task_card_.appendChild(card_right);
 
   return task_card_;
-}
-
-function toggle_footer(num_active_){
-  var footer = document.getElementById("task-footer");
-  if(num_active_ > 0){
-    footer.style.display = "flex";
-    document.getElementById("num-checked").innerText = num_active_ + " tasks selected";
-  }
-  else{
-    footer.style.display = "none";
-  }
 }
 
 var day_toggled = [null, null, null, null, null, null, null];
@@ -263,7 +246,7 @@ function create_goal(day_index){
 
   day_container.id = "goal-picker-" + day_index;
   var daily_counter = document.createElement("div");
-  daily_counter.innerHTML = '<table style="width:100%"><tr><th>Hours</th><th>Minutes</th></tr><tr><th><i class="fa fa-chevron-up" onclick="change_time(`hours`, 1)"></i></th><th><i class="fa fa-chevron-up" onclick="change_time(`minutes`, 1)"></i></th></tr><tr><th id="hours">00</th><th id="minutes">00</th></tr><tr><th><i class="fa fa-chevron-down" onclick="change_time(`hours`, -1)"></i></th><th><i class="fa fa-chevron-down" onclick="change_time(`minutes`, -1)"></i></th></tr></table>';
+  daily_counter.innerHTML = '<table style="width:100%"><tr><th>Hours</th><th>Minutes</th></tr><tr><th><i class="fa fa-chevron-up" onclick="change_time(`hours-'+ day_index +'`, 1)"></i></th><th><i class="fa fa-chevron-up" onclick="change_time(`minutes-'+ day_index +'`, 1)"></i></th></tr><tr><th id="hours-'+ day_index +'">00</th><th id="minutes-'+ day_index +'">00</th></tr><tr><th><i class="fa fa-chevron-down" onclick="change_time(`hours-'+ day_index +'`, -1)"></i></th><th><i class="fa fa-chevron-down" onclick="change_time(`minutes-'+ day_index +'`, -1)"></i></th></tr></table>';
   day_container.appendChild(day_header);
   day_container.appendChild(daily_counter);
 
@@ -275,39 +258,3 @@ function change_time(time_type, step){
   var time_int = parseInt(time_div.innerText);
   time_div.innerText = time_int + step;
 }
-
-//add a daily goal old way
-function toggle_goals(){
-  var user_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
-  var container = document.getElementById("active-tasks");
-  user_ref.once('value', function (workspace_snapshot) {
-    workspace_snapshot.forEach(function (child_workspace_snapshot) {
-      // for each task that is now active, create a box, input with a number
-      var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + child_workspace_snapshot.key + '/tasks/');
-      task_ref.on('value', function(task_snapshot) {
-        task_snapshot.forEach(function (child_task_snapshot){
-          var task_key = child_task_snapshot.key;
-          var task_data = child_task_snapshot.val();
-          var set_active_task;
-          if(task_data.status == "active"){
-            set_active_task = document.createElement("div");
-            var active_title = document.createElement("p");
-            active_title.innerText = task_data.title;
-            set_active_task.appendChild(active_title);
-            var active_goal = document.createElement("select");
-            active_goal.innerHTML = "<option value='0.25'>15 min</option><option value='0.5'>30 min</option><option value='0.75'>45 min</option><option value='1'>1 hr</option><option value='1.5'>1 hr 30 min</option><option value='2'>2 hr</option><option value='3'>3 hr</option><option value='4'>4 hr</option>";
-            set_active_task.appendChild(active_goal);
-            container.appendChild(set_active_task);
-          }
-        });
-      });
-    });
-  });
-  document.getElementById("add-daily-goal").style.display = "inline";
-}
-
-//Agenda:
-// - same nav bar
-// - list all active tasks
-// - title, get current day of week and use as index in weeklygoals
-// - play button on each task
