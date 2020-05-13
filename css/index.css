@@ -75,6 +75,33 @@ i{
     border: 2px aliceblue solid;
     font-family: 'Open Sans', sans-serif;
 }
+
+#add-weekly-goal{
+    display: none;
+    position: fixed;
+    width: 50%;
+    margin: 5% 25%;
+    padding: 20px;
+    background-color: white;
+    border: 2px aliceblue solid;
+    font-family: 'Open Sans', sans-serif;
+}
+#select-days{
+    display: flex;
+    justify-content: space-around
+}
+.day{
+    width: 30px;
+    line-height: 0px;
+    height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+}
+.day:hover{
+    background-color: black;
+    color:white;
+}
 input, select{
     display:block;
     margin-bottom: 5px;
@@ -97,4 +124,12 @@ input, select{
     display: inline;
     cursor: pointer;
     padding: 10px;
+}
+tr{
+    height: 30px;
+    font-size: 12px;
+}
+tr i{
+    margin: 0px;
+    font-size: 20px;
 }

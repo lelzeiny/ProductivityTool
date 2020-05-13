@@ -18,6 +18,7 @@ var app_fireBase = {};
   app_fireBase = firebase;
 })()
 
+// creates the options for the workspaces in the add task drop down
 function create_options(){
   var workspace_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("task_workspace");
@@ -41,6 +42,7 @@ function create_options(){
   });
 }
 
+// inside add task popup, called when user wants to create a new workspace
 function create_workspace(){
   var container = document.getElementById("workspace-div");
 
@@ -62,7 +64,7 @@ function create_workspace(){
   container.appendChild(workspace_new_color);
 }
 
-//called by submit button by add task div
+// called by submit button by add task div
 function save_data() {
   var workspace_key = document.getElementById('task_workspace').value;
   // create and define new workspace, pushes to Firebase
@@ -181,19 +183,20 @@ function create_card(task_data_){
       checkbox.className = "far fa-square";
       task_data_.status = "inactive";
       num_active--;
-      toggle_footer(num_active);
+      toggle_add_goals(false);
+      //toggle_footer(num_active); //toggling footer is old. will be changed to daily goals
     }
     else if(task_data_.status == "inactive"){
       task_data_.status = "active";
       checkbox.className = "far fa-check-square";
       num_active++;
-      toggle_footer(num_active);
+      toggle_add_goals(true);
+      //toggle_footer(num_active);
     }
   });
   card_right.className = "task-card-right";
   card_right.appendChild(checkbox);
   task_card_.appendChild(card_right);
-  
 
   return task_card_;
 }
@@ -209,6 +212,73 @@ function toggle_footer(num_active_){
   }
 }
 
+
+
+var day_toggled = [null, null, null, null, null, null, null];
+function toggle_add_goals(is_open){
+  var popup = document.getElementById("add-weekly-goal");
+  if(is_open){
+      //show the popup
+      popup.style.display = "block";
+  }
+  else{
+      //hide the popup
+      popup.style.display = "none";
+      //reset all selections
+      var day_array = document.getElementsByClassName("day");
+      for(var i = 0; i < day_array.length; i++){
+        day_array[i].style.color = "black";
+        day_array[i].style.backgroundColor = "white";
+      }
+      document.getElementById("select-daily-goals").innerHTML = "";
+      day_toggled = [null, null, null, null, null, null, null];
+  }
+}
+
+// stores if which days have been selected for a given task
+var day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+function toggle_goal_picker(day_index){
+  if(day_toggled[day_index] == null){
+    //make the day black when selected
+    document.getElementsByClassName("day")[day_index].style.backgroundColor = "black";
+    document.getElementsByClassName("day")[day_index].style.color = "white";
+    day_toggled[day_index] = 0;
+    create_goal(day_index);
+  }
+  else{
+    document.getElementsByClassName("day")[day_index].style.backgroundColor = "white";
+    document.getElementsByClassName("day")[day_index].style.color = "black";
+    day_toggled[day_index] = null;
+    delete_goal(day_index);
+  }
+}
+
+function delete_goal(day_index){
+  var week_container = document.getElementById("select-daily-goals");
+  week_container.removeChild(document.getElementById("goal-picker-" + day_index));
+}
+
+function create_goal(day_index){
+  var week_container = document.getElementById("select-daily-goals");
+  var day_container = document.createElement("div");
+  var day_header = document.createTextNode(day_names[day_index]);
+
+  day_container.id = "goal-picker-" + day_index;
+  var daily_counter = document.createElement("div");
+  daily_counter.innerHTML = '<table style="width:100%"><tr><th>Hours</th><th>Minutes</th></tr><tr><th><i class="fa fa-chevron-up" onclick="change_time(`hours`, 1)"></i></th><th><i class="fa fa-chevron-up" onclick="change_time(`minutes`, 1)"></i></th></tr><tr><th id="hours">00</th><th id="minutes">00</th></tr><tr><th><i class="fa fa-chevron-down" onclick="change_time(`hours`, -1)"></i></th><th><i class="fa fa-chevron-down" onclick="change_time(`minutes`, -1)"></i></th></tr></table>';
+  day_container.appendChild(day_header);
+  day_container.appendChild(daily_counter);
+
+  week_container.appendChild(day_container);
+}
+
+function change_time(time_type, step){
+  var time_div = document.getElementById(time_type);
+  var time_int = parseInt(time_div.innerText);
+  time_div.innerText = time_int + step;
+}
+
+//add a daily goal old way
 function toggle_goals(){
   var user_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("active-tasks");
@@ -237,3 +307,9 @@ function toggle_goals(){
   });
   document.getElementById("add-daily-goal").style.display = "inline";
 }
+
+//Agenda:
+// - same nav bar
+// - list all active tasks
+// - title, get current day of week and use as index in weeklygoals
+// - play button on each task
