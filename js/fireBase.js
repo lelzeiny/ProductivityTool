@@ -134,22 +134,17 @@ function print_data() {
       container.appendChild(workspace_head);
       workspace_head.className = "workspace-head";
       var color = workspace_data.color;
-      
-      //for each task that is not complete, create a card
-      var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/');
-      task_ref.once('value', function(task_snapshot) {
-        task_snapshot.forEach(function (child_task_snapshot){
-          var task_key = child_task_snapshot.key;
-          var task_data = child_task_snapshot.val();
-          var task_card;
-          if(task_data.status != "completed"){
-            task_card = create_card(task_data, workspace_key);
-            container.appendChild(task_card);
-            task_card.className = "task-card";
-            task_card.style.backgroundColor = color;
-          }
-        });
-      });
+
+      for(var i in workspace_data.tasks){
+        var task_data = workspace_data.tasks[i];
+        var task_card;
+        if(task_data.status != "completed"){
+          task_card = create_card(task_data, workspace_key);
+          container.appendChild(task_card);
+          task_card.className = "task-card";
+          task_card.style.backgroundColor = color;
+        }
+      }
     });
   });
 }
