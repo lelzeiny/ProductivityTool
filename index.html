@@ -41,7 +41,7 @@
   </div>
   <div id="add-weekly-goal" style="display: none;">
     <img src="assets/close.svg" id="close" onclick="toggle_add_goals(false)" height="30px">
-    <h1>Add Goals</h1>
+    <h1 id="goal-title">Add Goals</h1>
     <h3>How much time to you want to dedicate to this task?</h3>
     <!-- div for week, with da-->
     <div id="select-days">
@@ -54,6 +54,7 @@
       <div class="day" onclick="toggle_goal_picker(6)" style="color: black; background-color: white;"><p>S</p></div>
     </div>
     <div id="select-daily-goals"></div>
+    <div id="submit-daily-goals" onclick="submit_goals()">Submit</div>
   </div>
 
   <!-- Body -->

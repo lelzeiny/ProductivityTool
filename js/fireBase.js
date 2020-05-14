@@ -18,7 +18,10 @@ var app_fireBase = {};
   app_fireBase = firebase;
 })()
 
+var day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 // creates the options for the workspaces in the add task drop down
+// called by HTML id task_workspace
 function create_options(){
   var workspace_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("task_workspace");
@@ -43,6 +46,7 @@ function create_options(){
 }
 
 // inside add task popup, called when user wants to create a new workspace
+// called by HTML option inside id task_workspace
 function create_workspace(){
   var container = document.getElementById("workspace-div");
 
@@ -64,10 +68,11 @@ function create_workspace(){
   container.appendChild(workspace_new_color);
 }
 
-// called by submit button by add task div
+// submits the new task to Firebase
+// called by id submit-button
 function save_data() {
   var workspace_key = document.getElementById('task_workspace').value;
-  // create and define new workspace, pushes to Firebase
+  //if new workspace, push to Firebase
   if(workspace_key == "new"){
     workspace_key = document.getElementsByClassName("workspace_new")[0].value;
     var workspace_url = '/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key;
@@ -83,7 +88,7 @@ function save_data() {
   var task_url = '/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/';
   var task_id = firebase.database().ref(task_url).push().key;
   
-	// creates and defines data object which will be pushed to Firebase
+	//creates and defines data object which will be pushed to Firebase
 	var data = {
 		title: document.getElementById('task_title').value,
 		deadline: document.getElementById('task_deadline').value,
@@ -93,23 +98,28 @@ function save_data() {
     dailygoal: 0,
     id: task_id
 	}
-	// push to firebase
+	//push to firebase
 	let updates = {};
 	updates[task_url + task_id] = data;
   firebase.database().ref().update(updates);
   toggle_add_task(false);
 }
 
+// displays a popup to add a new task
+// called by HTML icon in id header
 function toggle_add_task(is_open){
   if(is_open){
+      //shows popup
       document.getElementById("add-task").style.display = "block";
   }
   else{
+      //hides popup
       document.getElementById("add-task").style.display = "none";
   }
 }
 
 // create the task cards by reading the database
+// called by HTML body
 function print_data() {
   var user_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/');
   var container = document.getElementById("task-list");
@@ -125,7 +135,7 @@ function print_data() {
       workspace_head.className = "workspace-head";
       var color = workspace_data.color;
       
-      // for each task that is not complete, create a card
+      //for each task that is not complete, create a card
       var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/');
       task_ref.on('value', function(task_snapshot) {
         task_snapshot.forEach(function (child_task_snapshot){
@@ -133,7 +143,7 @@ function print_data() {
           var task_data = child_task_snapshot.val();
           var task_card;
           if(task_data.status != "completed"){
-            task_card = create_card(task_data);
+            task_card = create_card(task_data, workspace_key);
             container.appendChild(task_card);
             task_card.className = "task-card";
             task_card.style.backgroundColor = color;
@@ -144,8 +154,9 @@ function print_data() {
   });
 }
 
-// Create HTML Elements
-function create_card(task_data_){
+// create HTML element for individual task
+// called by print_data
+function create_card(task_data_, workspace_key_){
   var task_card_ = document.createElement("div");
 
   var card_left = document.createElement("div");
@@ -168,14 +179,14 @@ function create_card(task_data_){
   
   var checkbox = document.createElement("i");
   if (task_data_.status == "inactive"){
-    //<i class="fas fa-square"></i>
+    //empty square
     checkbox.className = "far fa-square";
   }
   else{
-    //active
+    //filled square
     checkbox.className = "fas fa-square";
   }
-  //toggle the checkmark
+  //toggle the checkmark, open popup to define goals
   card_right.addEventListener("click", function () {
     if (task_data_.status == "active"){
       checkbox.className = "far fa-square";
@@ -185,6 +196,11 @@ function create_card(task_data_){
     else if(task_data_.status == "inactive"){
       task_data_.status = "active";
       checkbox.className = "far fa-check-square";
+      //mark which task opened the add_goal function
+      document.getElementById("goal-title").innerText = task_data_.title;
+      var task_local_url = workspace_key_ + "/tasks/" + task_data_.id;
+      document.getElementById("goal-title").setAttribute("name", task_local_url); //workspace+tasks+task.id
+      //popup for weekly goals
       toggle_add_goals(true);
     }
   });
@@ -195,6 +211,8 @@ function create_card(task_data_){
   return task_card_;
 }
 
+// show the popup to select goals for the week
+// called by HTML checkbox in create_card
 var day_toggled = [null, null, null, null, null, null, null];
 function toggle_add_goals(is_open){
   var popup = document.getElementById("add-weekly-goal");
@@ -216,29 +234,38 @@ function toggle_add_goals(is_open){
   }
 }
 
-// stores if which days have been selected for a given task
-var day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// stores which days have been selected for a given task
+// called by HTML class day
 function toggle_goal_picker(day_index){
   if(day_toggled[day_index] == null){
     //make the day black when selected
     document.getElementsByClassName("day")[day_index].style.backgroundColor = "black";
     document.getElementsByClassName("day")[day_index].style.color = "white";
+    //initialize value
     day_toggled[day_index] = 0;
+    //append a counter to input goal
     create_goal(day_index);
   }
   else{
+    //make the day white when unselected
     document.getElementsByClassName("day")[day_index].style.backgroundColor = "white";
     document.getElementsByClassName("day")[day_index].style.color = "black";
+    //uninitialize value
     day_toggled[day_index] = null;
+    //delete counter to input goal
     delete_goal(day_index);
   }
 }
 
+// deletes the counter for each day unselected
+// called by toggle goal picker
 function delete_goal(day_index){
   var week_container = document.getElementById("select-daily-goals");
   week_container.removeChild(document.getElementById("goal-picker-" + day_index));
 }
 
+// creates the counter for each day selected
+// called by toggle goal picker
 function create_goal(day_index){
   var week_container = document.getElementById("select-daily-goals");
   var day_container = document.createElement("div");
@@ -253,8 +280,22 @@ function create_goal(day_index){
   week_container.appendChild(day_container);
 }
 
+// changes the minute or hour counters
+// called by create_goal
+// time_type = hours or minutes, step = 1 or -1
 function change_time(time_type, step){
   var time_div = document.getElementById(time_type);
   var time_int = parseInt(time_div.innerText);
   time_div.innerText = time_int + step;
+}
+
+// submits the weekly goal data to firebase
+// called by HTML id submit-daily-goals
+function submit_goals(){
+  var task_local_url = document.getElementById("goal-title").getAttribute("name");
+  var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") + '/workspaces/' + task_local_url);
+  task_ref.update({
+   status: "active",
+   weeklygoals: day_toggled
+  });
 }

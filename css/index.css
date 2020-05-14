@@ -102,6 +102,14 @@ i{
     background-color: black;
     color:white;
 }
+#submit-daily-goals{
+    margin: 10px;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+}
 input, select{
     display:block;
     margin-bottom: 5px;
