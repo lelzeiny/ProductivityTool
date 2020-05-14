@@ -137,7 +137,7 @@ function print_data() {
       
       //for each task that is not complete, create a card
       var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") +'/workspaces/' + workspace_key + '/tasks/');
-      task_ref.on('value', function(task_snapshot) {
+      task_ref.once('value', function(task_snapshot) {
         task_snapshot.forEach(function (child_task_snapshot){
           var task_key = child_task_snapshot.key;
           var task_data = child_task_snapshot.val();
@@ -178,6 +178,7 @@ function create_card(task_data_, workspace_key_){
   var card_right = document.createElement("div");
   
   var checkbox = document.createElement("i");
+  checkbox.id = task_data_.title;
   if (task_data_.status == "inactive"){
     //empty square
     checkbox.className = "far fa-square";
@@ -273,7 +274,7 @@ function create_goal(day_index){
 
   day_container.id = "goal-picker-" + day_index;
   var daily_counter = document.createElement("div");
-  daily_counter.innerHTML = '<table style="width:100%"><tr><th>Hours</th><th>Minutes</th></tr><tr><th><i class="fa fa-chevron-up" onclick="change_time(`hours-'+ day_index +'`, 1)"></i></th><th><i class="fa fa-chevron-up" onclick="change_time(`minutes-'+ day_index +'`, 1)"></i></th></tr><tr><th id="hours-'+ day_index +'">00</th><th id="minutes-'+ day_index +'">00</th></tr><tr><th><i class="fa fa-chevron-down" onclick="change_time(`hours-'+ day_index +'`, -1)"></i></th><th><i class="fa fa-chevron-down" onclick="change_time(`minutes-'+ day_index +'`, -1)"></i></th></tr></table>';
+  daily_counter.innerHTML = '<table style="width:100%"><tr><th>Hours</th><th>Minutes</th></tr><tr><th><i class="fa fa-chevron-up" onclick="change_time(`hours`, '+ day_index +', 1)"></i></th><th><i class="fa fa-chevron-up" onclick="change_time(`minutes`, '+ day_index +', 1)"></i></th></tr><tr><th id="hours-'+ day_index +'">00</th><th id="minutes-'+ day_index +'">00</th></tr><tr><th><i class="fa fa-chevron-down" onclick="change_time(`hours`, '+ day_index +', -1)"></i></th><th><i class="fa fa-chevron-down" onclick="change_time(`minutes`, '+ day_index +', -1)"></i></th></tr></table>';
   day_container.appendChild(day_header);
   day_container.appendChild(daily_counter);
 
@@ -283,19 +284,31 @@ function create_goal(day_index){
 // changes the minute or hour counters
 // called by create_goal
 // time_type = hours or minutes, step = 1 or -1
-function change_time(time_type, step){
-  var time_div = document.getElementById(time_type);
+function change_time(time_type, day_index, step){
+  var time_div = document.getElementById(time_type + "-" + day_index);
   var time_int = parseInt(time_div.innerText);
   time_div.innerText = time_int + step;
+  if(time_type == "hours"){
+    day_toggled[day_index] += 60*step;
+  }
+  else{
+    day_toggled[day_index] += step;
+  }
 }
 
-// submits the weekly goal data to firebase
+// submits the weekly goal data to Firebase
 // called by HTML id submit-daily-goals
 function submit_goals(){
+  //update Firebases
   var task_local_url = document.getElementById("goal-title").getAttribute("name");
   var task_ref = firebase.database().ref('/users/'+ localStorage.getItem("uid") + '/workspaces/' + task_local_url);
   task_ref.update({
    status: "active",
    weeklygoals: day_toggled
   });
+
+  //remove popup
+  toggle_add_goals(false);
+  //fill task checkbox
+  document.getElementById(document.getElementById("goal-title").innerText).className = "fas fa-square";
 }
